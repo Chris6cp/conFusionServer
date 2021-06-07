@@ -8,8 +8,17 @@ const { authenticate } = require('../models/user');
 var authen = require('../authenticate');
 
 router.use(bodyParser.json());
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+router.get('/', authen.verifyAdmin, authen.verifyUser,(req, res, next) => {
+  User.find({}, (err, users) => {
+    if(err){
+      return next(err);
+    }
+    else{
+      res.statusCode =200;
+      res.setHeader=('Content-Type', 'application/json');
+      res.json(users);
+    }
+  })
 });
 
 router.post('/signup', (req, res, next) => {
